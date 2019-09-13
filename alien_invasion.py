@@ -69,6 +69,8 @@ class AlienInvasion:
             self.stats.reset_stats()
             self.stats.game_active = True
             self.sb.prep_score()
+            self.sb.prep_level()
+            self.sb.prep_ships()
 
             # Get rid of any remaining aliens/bullets
             self.aliens.empty()
@@ -88,12 +90,6 @@ class AlienInvasion:
         elif event.key == pygame.K_LEFT:
             # Move ship to the right
             self.ship.moving_left = True
-        elif event.key == pygame.K_UP:
-            # Move ship to the top
-            self.ship.moving_top = True
-        elif event.key == pygame.K_DOWN:
-            # Move ship to the bottom
-            self.ship.moving_bottom = True
         elif event.key == pygame.K_q:
             sys.exit()
         elif event.key == pygame.K_SPACE:
@@ -104,10 +100,6 @@ class AlienInvasion:
             self.ship.moving_right = False
         elif event.key == pygame.K_LEFT:
             self.ship.moving_left = False
-        elif event.key == pygame.K_UP:
-            self.ship.moving_top = False
-        elif event.key == pygame.K_DOWN:
-            self.ship.moving_bottom = False
 
     def _fire_bullet(self):
         if len(self.bullets) < self.settings.bullets_allowed:
@@ -133,12 +125,17 @@ class AlienInvasion:
             for aliens in collisions.values():
                 self.stats.score += self.settings.alien_points * len(aliens)
             self.sb.prep_score()
+            self.sb.check_high_score()
 
         if not self.aliens:
             # Destroy existing bullets and create new fleet
             self.bullets.empty()
             self._create_fleet()
             self.settings.increase_speed()
+
+            # Increase level
+            self.stats.level += 1
+            self.sb.prep_level()
 
     def _update_aliens(self):
         self._check_fleet_edges()
@@ -189,8 +186,9 @@ class AlienInvasion:
     def _ship_hit(self):
         if self.stats.ships_left > 0:
             self.stats.ships_left -= 1
+            self.sb.prep_ships()
 
-            # Get rid of any remiaining aliens and bullets
+            # Get rid of any remaining aliens and bullets
             self.aliens.empty()
             self.bullets.empty()
 
