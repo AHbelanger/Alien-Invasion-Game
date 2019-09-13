@@ -9,21 +9,34 @@ class Settings:
         self.bg_color = (230, 230, 230)
 
         # Ship settings
-        self.ship_speed = 10.0
         self.ship_limit = 3
 
         # Bullet settings
-        self.bullet_speed = 7.0
         self.bullet_width = 6
         self.bullet_height = 15
         self.bullet_color = (230, 0, 0)
         self.bullets_allowed = 5
 
         # Alien settings
-        self.alien_speed = 1.0
         self.fleet_drop_speed = 10
-        # fleet_direction of 1 rep. right and -1 rep. left
-        self.fleet_direction = 1
+
+        # Change in speed after each level
+        self.speedup_scale = 1.1
+
+        self.initialize_dynamic_settings()
+
+        def initialize_dynamic_settings(self):
+            self.ship_speed = 1.5
+            self.bullet_speed = 7
+            self.alien_speed = 1.0
+
+            # fleet_direction of 1 rep. right and -1 rep. left
+            self.fleet_direction = 1
+
+        def increase_speed(self):
+            self.ship_speed *= self.speedup_scale
+            self.bullet_speed *= self.speedup_scale
+            self.alien_speed *= self.speedup_scale
 
 
 
